@@ -32,12 +32,7 @@ public class Banda
 
     public double RetornaMedia()
     {
-        double soma = 0;
-        foreach (Double nota in notas)
-        {
-            soma += nota;
-        }
-        return soma / notas.Count;
+       return notas.Average();
     }
 
     public override int GetHashCode()
