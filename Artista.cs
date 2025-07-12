@@ -11,14 +11,14 @@ public class Artista
     private int registro;
     private String nome;
     private List<Double> notas;
-    private List<Musica> musicas;
+    private List<Album> albuns;
 
     public Artista(String nome)
     {
         this.nome = nome;
         this.registro = ++ultimoId;
         notas = new List<Double>();
-        musicas = new List<Musica>();
+        albuns = new List<Album>();
     }
 
     public String getNome() => nome;  
@@ -29,31 +29,29 @@ public class Artista
         notas.Add(nota);
     }
 
-    public void AdicionarMusicaAoArtista(Musica musica) 
+    public void AdicionarAlbumAoArtista(Album album) 
     {
-        if (musica == null)
+        if (album == null)
             throw new ArgumentNullException("O objeto não pode ser nulo");
 
-        musicas.Add(musica);    
+        albuns.Add(album);    
     }
 
     public double RetornaMedia() => notas.Average();    
   
     public override int GetHashCode() => registro;
 
-    public List<Musica> RetornaListaDeMusicas => musicas;
+    public List<Album> RetornaListaDeAlbuns => albuns;
 
 
     public override string ToString()
     {
         StringBuilder sb = new StringBuilder();
         sb.AppendLine($"Artista: {nome}");
-        sb.AppendLine("Notas:");
 
-
-        foreach (double nota in notas)
+        foreach (Album album in albuns)
         {
-            sb.AppendLine($"{nota}");
+            sb.AppendLine(album.ToString());
         }
 
         return sb.ToString();
