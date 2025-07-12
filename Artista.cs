@@ -2,57 +2,52 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ScreenSound;
-public class Banda
+public class Artista
 {
     private static int ultimoId = 0;
     private int registro;
     private String nome;
     private List<Double> notas;
+    private List<Musica> musicas;
 
-    public Banda(String nome)
+    public Artista(String nome)
     {
         this.nome = nome;
         this.registro = ++ultimoId;
         notas = new List<Double>();
+        musicas = new List<Musica>();
     }
 
-    public String getNome()
-    {
-        return nome;
-    }
-    public void AvaliarBanda(double nota)
+    public String getNome() => nome;  
+    public void AvaliarArtista(double nota)
     {
         if (nota < 0)
             throw new ArgumentException("A nota deve ser maior que 0");
         notas.Add(nota);
     }
 
-    public double RetornaMedia()
+    public void AdicionarMusicaAoArtista(Musica musica) 
     {
-       return notas.Average();
-    }
-
-    public override int GetHashCode()
-    {
-        return registro;
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj == null)
+        if (musica == null)
             throw new ArgumentNullException("O objeto não pode ser nulo");
 
-        Banda outra = (Banda)obj;
-        return outra.getNome().Equals(nome);
+        musicas.Add(musica);    
     }
+
+    public double RetornaMedia() => notas.Average();    
+  
+    public override int GetHashCode() => registro;
+
+    public List<Musica> RetornaListaDeMusicas => musicas;
+
 
     public override string ToString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.AppendLine($"Banda: {nome}");
+        sb.AppendLine($"Artista: {nome}");
         sb.AppendLine("Notas:");
 
 

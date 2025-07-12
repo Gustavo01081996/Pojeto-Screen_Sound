@@ -1,8 +1,9 @@
 ﻿using ScreenSound;
+using System.Globalization;
 
 string mensagemDeBoasVindas = "\nBoas vindas ao Screen Sound";
 
-Dictionary<int, Banda> conjuntoBandas = new Dictionary<int, Banda>();
+Dictionary<int, Artista> conjuntoDeArtistas = new Dictionary<int, Artista>();
 
 void ExibirLogo()
 {
@@ -20,10 +21,12 @@ void ExibirOpcoesDoMenu()
 {
     ExibirLogo();
 
-    Console.WriteLine("\nDigite 1 para registrar uma banda");
-    Console.WriteLine("Digite 2 para mostrar todas as bandas");
-    Console.WriteLine("Digite 3 para avaliar uma banda");
-    Console.WriteLine("Digite 4 para exibir a média de uma banda");
+    Console.WriteLine("\nDigite 1 para registrar um artista");
+    Console.WriteLine("Digite 2 para mostrar todos os artistas");
+    Console.WriteLine("Digite 3 para avaliar um artista");
+    Console.WriteLine("Digite 4 para exibir a média de um artista");
+    Console.WriteLine("Digite 5 para cadastrar uma música");
+    Console.WriteLine("Digite 6 para exibir as músicas de um determinado artista");
     Console.WriteLine("Digite -1 para sair");
 
 }
@@ -36,24 +39,25 @@ do
     Console.Write("\nDigite a sua opção: ");
     opcao = int.Parse(Console.ReadLine()!);
 
-    string nomeBanda;
+    string nomeArtista;
+    Artista artistaEscolhido;
 
     switch (opcao)
     {
         case 1:
-            RegistrarBanda();
+            RegistrarArtista();
             break;
         case 2:
-            MostrarBandas();
+            MostrarArtistas();
             break;
         case 3:
-            ExibeNomesBandas();
+            ExibeNomesArtistas();
             try
             {
-                Console.Write("Informe o nome da banda que deseja avaliar: ");
-                nomeBanda = Console.ReadLine();
-                Banda bandaEscolhida = RetornaBandaPeloNome(nomeBanda);
-                AvaliaBanda(bandaEscolhida);
+                Console.Write("Informe o nome do artista que deseja avaliar: ");
+                nomeArtista = Console.ReadLine()!;
+                artistaEscolhido = RetornaArtistaPeloNome(nomeArtista);
+                AvaliaArtista(artistaEscolhido);
             }
             catch (ArgumentNullException e)
             {
@@ -61,18 +65,32 @@ do
             }
             break;
         case 4:
-            ExibeNomesBandas();
+            ExibeNomesArtistas();
             try
             {
-                Console.Write("Informe o nome da banda que deseja saber a média de notas: ");
-                nomeBanda = Console.ReadLine()!;
-                Banda bandaEscolhida = RetornaBandaPeloNome(nomeBanda);
-                ExibeMediaBanda(bandaEscolhida);
+                Console.Write("Informe o nome do artista que deseja saber a média de notas: ");
+                nomeArtista = Console.ReadLine()!;
+                artistaEscolhido = RetornaArtistaPeloNome(nomeArtista);
+                ExibeMediaBanda(artistaEscolhido);
             }
             catch (ArgumentNullException e)
             {
                 Console.WriteLine($"{e.Message}");
             }
+            break;
+            case 5:
+            ExibeNomesArtistas();
+            Console.Write("Para qual artista deseja adicionar a música? ");
+            string nome = Console.ReadLine()!;
+            artistaEscolhido = RetornaArtistaPeloNome(nome);
+            AdicionarMusica(artistaEscolhido);
+            break;
+            case 6:
+            ExibeNomesArtistas();
+            Console.Write("De qual artista deseja ver as músicas? ");
+            nome = Console.ReadLine()!;
+            artistaEscolhido = RetornaArtistaPeloNome(nome);
+            ExibeMusicaArtista(artistaEscolhido);
             break;
         case -1:
             Console.WriteLine("Saindo do sistema");
@@ -84,59 +102,59 @@ do
     }
 } while (opcao != -1);
 
-void RegistrarBanda()
+void RegistrarArtista()
 {
     Console.Clear();
-    ExibeTituloDaOpcao("Registro das bandas");
-    Console.Write("Digite o nome da banda que deseja registrar: ");
-    string nomeDaBanda = Console.ReadLine()!;
-    Banda banda = new Banda(nomeDaBanda);
-    int codigo = banda.GetHashCode();
-    conjuntoBandas.Add(codigo, banda);
-    Console.WriteLine($"A banda {nomeDaBanda} foi registada com sucesso!");
+    ExibeTituloDaOpcao("Registro dos artistas");
+    Console.Write("Digite o nome do artista que deseja registrar: ");
+    string nomeArtista = Console.ReadLine()!;
+    Artista artista = new Artista(nomeArtista);
+    int codigo = artista.GetHashCode();
+    conjuntoDeArtistas.Add(codigo, artista);
+    Console.WriteLine($"O(a) {nomeArtista} foi registado(a3) com sucesso!");
     Thread.Sleep(2000);
     Console.Clear();
 }
 
-void MostrarBandas()
+void MostrarArtistas()
 {
     Console.Clear();
-    foreach (Banda banda in conjuntoBandas.Values)
+    foreach (Artista artista in conjuntoDeArtistas.Values)
     {
-        Console.WriteLine(banda);
+        Console.WriteLine(artista.ToString());
     }
 
     Thread.Sleep(3000);
     Console.Clear();
 }
 
-void ExibeNomesBandas()
+void ExibeNomesArtistas()
 {
     Console.Clear();
-    ExibeTituloDaOpcao("Exibindo todas as bandas cadastradas");
-    foreach (Banda banda in conjuntoBandas.Values)
+    ExibeTituloDaOpcao("Exibindo todos os artistas cadastrados");
+    foreach (Artista artista in conjuntoDeArtistas.Values)
     {
-        Console.WriteLine(banda.getNome());
+        Console.WriteLine(artista.getNome());
     }
     Console.WriteLine();
 }
 
-void AvaliaBanda(Banda banda)
+void AvaliaArtista(Artista artista)
 {
-    if (banda == null)
-        throw new ArgumentNullException("Banda não cadastrada no sistema");
+    if (artista == null)
+        throw new ArgumentNullException("Artista não cadastrada no sistema");
 
     try
     {
 
-        Console.Write($"Informe a nota que deseja dar para {banda.getNome()}: ");
-        double nota = double.Parse(Console.ReadLine());
-        banda.AvaliarBanda(nota);
+        Console.Write($"Informe a nota que deseja dar para {artista.getNome()}: ");
+        double nota = double.Parse(Console.ReadLine()!);
+        artista.AvaliarArtista(nota);
         Console.WriteLine("Nota inserida com sucesso!");
     }
     catch (FormatException e)
     {
-        Console.WriteLine("Formato de nota inválido");
+        Console.WriteLine("Erro: " + e.Message);
     }
     finally
     {
@@ -146,26 +164,50 @@ void AvaliaBanda(Banda banda)
 
 }
 
-void ExibeMediaBanda(Banda banda)
+void ExibeMediaBanda(Artista artista)
 {
-    if (banda == null)
-        throw new ArgumentNullException("Banda não cadastrada no sistema");
+    if (artista == null)
+        throw new ArgumentNullException("Artista não cadastrado no sistema");
 
-    ExibeTituloDaOpcao("Exibindo média da banda selecionada");
+    ExibeTituloDaOpcao("Exibindo média do artista selecionado");
 
-    Console.WriteLine($"A média da banda {banda.getNome()} é: {banda.RetornaMedia().ToString("F2")}");
+    Console.WriteLine($"A média da banda {artista.getNome()} é: {artista.RetornaMedia().ToString("F2")}");
 
     Thread.Sleep(3000);
     Console.Clear();
 }
 
-Banda RetornaBandaPeloNome(string nomeBanda)
+void AdicionarMusica(Artista artista) 
 {
-    foreach (Banda banda in conjuntoBandas.Values)
+    if (artista == null)
+        throw new ArgumentNullException("Artista não cadastrado no sistema");
+
+    bool disponivel = false;
+    Console.Write("Qual o nome da música? ");
+    string nome = Console.ReadLine()!;
+    Console.Write("Qual a duração da musica? (mm:ss)? ");
+    TimeOnly duracao = TimeOnly.ParseExact(Console.ReadLine()!, "mm\\:ss", CultureInfo.InvariantCulture);
+    Console.Write("Essa música já está disponível (s/n)? ");
+    char disponibilidade = Console.ReadLine()!.ToLower().ElementAt(0);
+    if (disponibilidade == 's') 
     {
-        if (nomeBanda.Equals(banda.getNome()))
+        disponivel = true;  
+    }
+
+    artista.AdicionarMusicaAoArtista(new Musica(nome, artista, duracao, disponivel));
+    Console.WriteLine("Música cadastrada com sucesso!");
+    Thread.Sleep(2000);
+    Console.Clear();
+
+}
+
+Artista RetornaArtistaPeloNome(string nomeArtista)
+{
+    foreach (Artista artista in conjuntoDeArtistas.Values)
+    {
+        if (nomeArtista.Equals(artista.getNome()))
         {
-            return banda;
+            return artista;
         }
     }
     return null;
@@ -180,3 +222,18 @@ void ExibeTituloDaOpcao(string titulo)
     Console.WriteLine(asteriscos + "\n");
 
 }
+
+void ExibeMusicaArtista(Artista artista) 
+{
+    List<Musica> musicas = conjuntoDeArtistas[artista.GetHashCode()].RetornaListaDeMusicas;
+    Console.WriteLine($"Artista: {artista.getNome()}");
+    foreach (Musica musica in musicas) 
+    {
+        Console.WriteLine(musica.ToString());
+    }
+
+    Thread.Sleep(4000);
+    Console.Clear();
+}
+
+
